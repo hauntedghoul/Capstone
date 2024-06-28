@@ -1,0 +1,32 @@
+.cowboy{
+    margin-top: 60px;
+    display: flex;
+    width: 450px;
+    border: solid white 5px;
+    border-radius: 500px;
+    background-color:#21161D;
+}
+
+.image{
+    display: flex;
+}
+.text1{
+    margin-right: 70px;
+    margin-left: 20px;
+
+}
+
+.text2{
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-large;
+    margin-right: 70px;
+    margin-left: 20px;
+    margin-bottom: 40px;
+}
+.block1{
+    display: flex;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-large;
+}

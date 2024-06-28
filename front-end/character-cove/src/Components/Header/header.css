@@ -1,0 +1,37 @@
+.header-back {
+    background-color: #21161D;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.header {
+    display: flex;
+    height: 150px;
+    margin-left: 40px;
+    margin-right: 30px;
+    border-bottom: solid 8px #5F506B;
+    align-items: center;
+}
+
+.logo {
+    width: 200px;
+    height: 150px;
+}
+
+.title {
+    font-family: monospace;
+    color: white;
+    font-size: 90px;
+    font-weight: bold;
+    margin-left: 250px;
+}
+
+.pfp {
+    width: 100px;
+    height: 100px;
+    border-radius: 150px;
+    margin-left: auto;
+}
