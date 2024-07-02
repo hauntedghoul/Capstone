@@ -10,29 +10,29 @@ const Navbar = () => {
                     <li><Link to="/login">Login</Link></li>
                     <li><Link to="/account">Account</Link></li> */}
                     <li><Link to="/">
-                        < img src='./images/Home.png' />
+                        < img src='./images/Home.png' className='navbarimg'  alt='home'/>
                         Home</Link></li>
                     <li><Link to="/about">
-                        < img src='./images/About.png' />
+                        < img src='./images/About.png' className='navbarimg' alt='about'/>
                         About</Link></li>
                     
                     <li><Link to="/create">
-                        < img src='./images/Create.png' />
+                        < img src='./images/Create.png' className='navbarimg' alt='create'/>
                         create</Link></li>
                     <li><Link to="/notification">
-                        < img src='./images/Notif.png' />
+                        < img src='./images/Notif.png' className='navbarimg' alt='notification'/>
                         notification</Link></li>
                     <li><Link to="/settings">
-                        < img src='./images/Setting.png' />
+                        < img src='./images/Setting.png' className='navbarimg' alt='setting'/>
                         Settings</Link></li>
                     <li><Link to="/search">
-                        < img src='./images/Search.png' />
+                        < img src='./images/Search.png' className='navbarimg' alt='search'/>
                         Search</Link></li>
                     <li><Link to="/browse">
-                        < img src='./images/Browse.png' />
+                        < img src='./images/Browse.png' className='navbarimg' alt='browse'/>
                         browse</Link></li>
                     <div className='ad'>
-                        <div><img src='./images/discord.png'/></div>
+                        <div><img src='./images/discord.png' className='navbarimg' alt='discord'/></div>
                     Want access to the discord? For the low price of $2.99 a month you can! (I am joking, you don't have to pay, just ask and I will let you in!)
                     </div>
 

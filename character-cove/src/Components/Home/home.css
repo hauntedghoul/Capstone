@@ -1,0 +1,46 @@
+.posts {
+  display: flex; /* Use flexbox to layout posts */
+  flex-wrap: wrap;
+  align-items: flex-start; /* Align items at the top */
+  justify-content: space-between; /* Add this to distribute space between items */
+  gap: 10px; /* Controls the space between items */
+  max-width: 1020px; /* Adjust this width as needed for your layout */
+  margin: auto; /* Center the posts container */
+  margin-left: 300px;
+}
+
+.post {
+  background-color: #76949F;
+  border-radius: 30px;
+  color: white;
+  width: 500px;
+  font-family: monospace;
+  font-size: x-large;
+  height: auto; /* Ensures the height stretches with content */
+  margin: 10px; /* Adds margin to create space between posts */
+  padding: 20px;
+  box-sizing: border-box; /* Includes padding in the element's total width and height */
+}
+
+.content {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.postimage img {
+  width: 100%;
+  height: auto; /* Allows height to adjust based on image aspect ratio */
+  object-fit: cover;
+}
+
+.username {
+  display: inline-flex;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: medium;
+  margin-left: 20px;
+}
+
+.user {
+  margin-left: 20px;
+  margin-top: 40px;
+}

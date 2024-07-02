@@ -1,0 +1,15 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: linear-gradient(#25181F, #6A6B83) fixed;
+  background-size: cover;
+}
+
+.main {
+  margin-left: 400px;
+  margin-top: 150px;
+  padding: 20px;
+}
