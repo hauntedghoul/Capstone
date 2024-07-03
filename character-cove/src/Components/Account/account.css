@@ -1,0 +1,112 @@
+body {
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.account-container {
+    margin-left: -120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #1e1e1e; /* Example background color */
+}
+
+.banner-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+
+.banner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-picture {
+    position: absolute;
+    bottom: -100px;
+    left: 585px;
+    width: 200px;
+    height: 200px;
+    border-radius: 20%;
+    border: 10px solid white;
+}
+
+.edit-button {
+    position: absolute;
+    bottom: -150px;
+    left: 51%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #86BBBD;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.edit-button:hover {
+    background-color: #6A6B83; /* Darker color on hover */
+}
+
+.info-container {
+    margin-top: 150px; /* Adjust based on pfp positioning */
+    margin-left: 50px;
+    text-align: center;
+}
+
+.pf-user {
+    font-size: xx-large; /* Adjust as needed */
+    font-weight: bold;
+    margin-bottom: 20px; /* Adjust as needed */
+    margin-left: -5px;
+}
+
+.follow-info {
+    display: flex;
+    justify-content: center;
+    gap: 100px; /* Adjust as needed */
+}
+
+.following, .followers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px; /* Adjust as needed */
+}
+
+.number {
+    font-size: 24px; /* Adjust as needed */
+    margin-top: 5px; /* Adjust as needed */
+}
+
+.bio{
+    margin-left: 20px;
+    font-size: x-large;
+}
+
+.bio-text{
+    text-align: center;
+    width: 1000px;
+    padding-bottom: 50px;
+}
+
+.character-container{
+    margin-left: 110px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+
+}
+
+.characters{
+    width: 250px;
+    height: 250px;
+    gap: 50px;
+    align-items: center;
+
+}

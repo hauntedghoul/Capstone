@@ -1,0 +1,40 @@
+.setting-container{
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 50px;
+}
+
+.user-setting,
+.email-setting,
+.password-setting {
+    margin: 20px; /* Adjusted margin for all settings sections */
+}
+
+.password-setting {
+    display: flex;
+    flex-direction: column; /* Ensures inputs stack vertically */
+}
+
+.save{
+    align-items: center;
+    height: 50px;
+    width: 90px;
+    margin-left: 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #5F506B;
+    color: white;
+    cursor: pointer;
+}
+
+.input{
+    margin-left: 10px;
+}
+
+.input-box{
+    width: 500px;
+    height: 50px;
+    background-color: transparent;
+
+}
