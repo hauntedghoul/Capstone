@@ -1,0 +1,37 @@
+.login-container{
+    margin-top: 50px;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 50px;
+    margin-right: 150px;
+}
+
+.login-logo{
+    height: 300px;
+    
+}
+
+.login-input{
+    border-radius: 20px;
+    padding: 5px;
+    width: 500px;
+    height: 50px;
+    margin: 25px;
+}
+
+.login{
+    align-items: center;
+    height: 50px;
+    width: 390px;
+    margin-left: 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #5F506B;
+    color: white;
+    cursor: pointer;
+}
+
+.signup{
+    font-size: medium;
+}

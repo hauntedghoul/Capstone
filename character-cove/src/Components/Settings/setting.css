@@ -1,5 +1,8 @@
 .setting-container{
-    text-align: center;
+    /* text-align: center; */
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 100px;
     font-family: 'Courier New', Courier, monospace;
     font-size: 50px;
 }
@@ -12,7 +15,6 @@
 
 .password-setting {
     display: flex;
-    flex-direction: column; /* Ensures inputs stack vertically */
 }
 
 .save{

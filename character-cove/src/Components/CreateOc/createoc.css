@@ -1,0 +1,81 @@
+.createoc-container {
+    background-color: #76949F;
+    width: 1150px;
+    height: auto;
+}
+
+.ocbanner {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.oc-main {
+    position: absolute;
+    bottom: 300px;
+    left: 500px;
+    width: 200px;
+    height: 200px;
+    border-radius: 20%;
+    border: 10px solid white;
+}
+
+.name {
+    font-size: larger;
+    margin-left: 320px;
+}
+
+.general {
+    color: black;
+    text-align: center;
+    width: 500px;
+    height: fit-content;
+    background-color: white;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 25px;
+    margin-left: 50px;
+
+}
+
+.tag-gen {
+    display: flex;
+}
+
+.quote {
+    color: white;
+    font-size: large;
+    background-color: #86BBBD;
+}
+
+.oc-name {
+    color: white;
+    font-size: x-large;
+    background-color: #86BBBD;
+}
+
+.tags{
+    color: black;
+    text-align: center;
+    width: 500px;
+    height: fit-content;
+    background-color: white;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 25px;
+    margin-left: 20px;
+}
+
+.tag-button{
+    align-items: center;
+    height: 30px;
+    width: 90px;
+    margin-left: 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #5F506B;
+    color: white;
+    cursor: pointer;
+}
+

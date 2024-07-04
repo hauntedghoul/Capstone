@@ -1,0 +1,19 @@
+.sign-container{
+    margin-top: -20px;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 50px;
+    margin-right: 150px;
+}
+
+.sign-input{
+    border-radius: 20px;
+    padding: 5px;
+    width: 500px;
+    height: 50px;
+    margin: 20px;
+}
+
+.sign-logo{
+    height: 250px;
+}
