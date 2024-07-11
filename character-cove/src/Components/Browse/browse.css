@@ -1,0 +1,51 @@
+.browse-container{
+    text-align: center;
+    font-size: 35px;
+    margin-top: 50px;
+    
+}
+
+.browse-character-container{
+    font-size: 25px;
+    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.search{
+    color: white;
+    width: 800px;
+    height: 50px;
+    border-radius: 25px;
+    border: solid 5px #6A6B83;
+    background-color: transparent;
+    font-size: 35px;
+    padding: 10px;
+}
+
+.radio{
+    margin-left: 20px;
+}
+
+.extra-search{
+    display: flex;
+    margin-left:50px;
+}
+
+.extra{
+    margin: 20px;
+    height: 30px;
+    width: 400px;
+    border-radius: 25px;
+    border: solid 5px #6A6B83;
+    background-color: transparent;
+    padding: 10px;
+}
+
+.found-characters{
+    width: 300px;
+    height: 300px;
+    margin-left: 50px;
+    margin-right: 20px;
+}
+

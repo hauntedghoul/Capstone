@@ -10,6 +10,10 @@ import Signup from './Components/Signup/signup'
 import Createprofile from './Components/CreateProfile/createprofile';
 import Post from './Components/Posts/post';
 import CreateOc from './Components/CreateOc/createoc'
+import Browse from './Components/Browse/browse'
+import Notifcation from './Components/Notification/notif'
+import OCPage from './Components/OcPage/ocpage'
+import EditOc from './Components/EditOc/editoc'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './Components/Header/header';
 
@@ -32,8 +36,14 @@ function App() {
             <Route path="/settings" element={<Settings />}/>
             <Route path="/post" element={<Post />} />
             <Route path="/create" element={<CreateOc />}/>
-            <Route path="/notification" />
-            <Route path="/browse" />
+            <Route path="/browse" element={<Browse />}/>
+            <Route path="/notification" element={<Notifcation />}/>
+
+            <Route path="/ocpage" element={<OCPage />}/>
+            <Route path="/editoc" element={<EditOc />}/>
+
+
+            
           </Routes>
         </div>
       </div>

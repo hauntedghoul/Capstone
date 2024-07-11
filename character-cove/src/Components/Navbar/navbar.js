@@ -23,8 +23,6 @@ const Navbar = () => {
                     <li><Link to="/notification">
                         < img src='./images/Notif.png' className='navbarimg' alt='notification' />
                         notification</Link></li>
-
-
                     <li><Link to="/browse">
                         < img src='./images/Browse.png' className='navbarimg' alt='browse' />
                         browse</Link></li>

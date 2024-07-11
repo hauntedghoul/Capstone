@@ -2,6 +2,7 @@
     background-color: #76949F;
     width: 1150px;
     height: auto;
+    padding-bottom: 25px;
 }
 
 .ocbanner {
@@ -40,6 +41,7 @@
 
 .tag-gen {
     display: flex;
+    margin-bottom: 25px;
 }
 
 .quote {
@@ -79,3 +81,106 @@
     cursor: pointer;
 }
 
+.persona-container{
+    background-color: white;
+    color: black;
+    padding: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+    border-radius: 25px;
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 25px;
+
+}
+
+.persona{
+    color: black;
+    border: none;
+    border-radius: 25px;
+    height: 300px;
+    width: 990px;
+    background-color: white;
+    font-size: xx-large;
+    margin-bottom: 50px;
+    padding: 20px;
+    
+}
+
+
+.images-container {
+    margin-top: 20px;
+    background-color: white;
+    color: black;
+    padding: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+    border-radius: 25px;
+    font-size: 25px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .buttons{
+    align-items: center;
+    height: 50px;
+    width: 90px;
+    margin-left: 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #5F506B;
+    color: white;
+    cursor: pointer;
+}
+
+.button-container{
+    margin-left: 850px;
+    margin-top: 25px;
+
+}
+.buttons{
+    align-items: center;
+    height: 50px;
+    width: 90px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #5F506B;
+    color: white;
+    cursor: pointer;
+}
+
+  .image-input, .file-input {
+    justify-content: space-between;
+    margin-bottom: 10px;
+    margin-left: 50px;
+  }
+  
+  .image-input input, .file-input input {
+    width: calc(100% - 200px);
+    padding: 8px;
+  }
+  
+  .image-input button {
+    width: 80px;
+    padding: 8px;
+  }
+
+  .image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  .image-slot {
+    height: 300px;
+    width: 300px;
+    background-color: #ccc;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 10px;
+    border-radius: 20px;
+  }

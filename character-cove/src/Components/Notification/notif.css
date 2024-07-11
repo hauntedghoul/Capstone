@@ -1,0 +1,9 @@
+.notif{
+    display: flex;
+    background-color: #5F506B;
+    padding: 10px;
+    border-radius: 20px;
+    width: 1100px;
+    margin-top: 25px;
+}
+
