@@ -1,13 +1,16 @@
 import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './createprofile.css';
 
-const Createprofile = () => {
+const CreateProfile = () => {
     const [color, setColor] = useState('#000000'); // Default color
     const [bannerSrc, setBannerSrc] = useState('/images/grayblock.png');
     const [pfpSrc, setPfpSrc] = useState('/images/grayblock.png');
+    const [bio, setBio] = useState('');
     const fileInputRefBanner = useRef(null);
     const fileInputRefPfp = useRef(null);
+    const navigate = useNavigate();
 
     const handleColorChange = (event) => {
         setColor(event.target.value);
@@ -39,6 +42,30 @@ const Createprofile = () => {
         }
     };
 
+    const handleSubmit = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.post(
+                'http://localhost:6969/profiles',
+                {
+                    profileImage: pfpSrc,
+                    bannerImage: bannerSrc,
+                    bio,
+                    backgroundColor: color
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            console.log('Profile created:', res.data);
+            navigate('/account');
+        } catch (error) {
+            console.error('Error creating profile:', error);
+        }
+    };
+
     return (
         <div className='create-profile-container'>
             <h1>PROFILE SETUP</h1>
@@ -65,7 +92,14 @@ const Createprofile = () => {
                 <div>
                     <h3 className='bio'> BIO </h3>
                     <div className='edit-bio-text'>
-                        <textarea id="bio" name="bio" className="createbio-input" placeholder="Enter your bio..."></textarea>
+                        <textarea
+                            id="bio"
+                            name="bio"
+                            className="createbio-input"
+                            placeholder="Enter your bio..."
+                            value={bio}
+                            onChange={(e) => setBio(e.target.value)}
+                        />
                     </div>
                 </div>
                 <div>
@@ -81,12 +115,10 @@ const Createprofile = () => {
                 />
             </div>
             <div>
-                <Link to="/Account" >
-                    <button className='edit-button-bottom'>NEXT</button>
-                </Link>
+                <button className='edit-button-bottom' onClick={handleSubmit}>NEXT</button>
             </div>
         </div>
     );
 };
 
-export default Createprofile;
+export default CreateProfile;

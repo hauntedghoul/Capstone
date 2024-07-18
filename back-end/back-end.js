@@ -2,7 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const { User, Profile } = require('./dal/mongo-dal');
+const jwt = require('jsonwebtoken');
+const { User, Profile, Character } = require('./dal/mongo-dal');
+const authenticateUser = require('./middelware/authenticate');
 
 const app = express();
 const port = 6969;
@@ -10,35 +12,81 @@ const port = 6969;
 app.use(cors());
 app.use(express.json()); // To parse JSON bodies
 
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+
+mongoose.connect('mongodb+srv://mmitchell:Tuff12top@cluster0.fm4mkz2.mongodb.net/CharacterCove')
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error(err));
+
 // User creation route
-app.post('/users', async (req, res) => {
+app.post('/register', async (req, res) => {
     try {
-        console.log('Received request:', req.body); // Log the request body
         const { username, email, password } = req.body;
-        const user = new User({ username, email, password });
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({ username, email, password: hashedPassword });
         await user.save();
-        console.log('User created:', user); // Log the created user
         res.status(201).send(user);
     } catch (error) {
-        console.error('Error creating user:', error); // Log the error
+        console.error('Error creating user:', error);
         res.status(400).send(error);
     }
 });
 
 // Profile creation route
-app.post('/profiles', async (req, res) => {
+app.post('/profiles', authenticateUser, async (req, res) => {
     try {
-        console.log('Received request:', req.body); // Log the request body
-        const { user, profileImage, bannerImage, bio, backgroundColor } = req.body;
-        const profile = new Profile({ user, profileImage, bannerImage, bio, backgroundColor });
+        const { profileImage, bannerImage, bio, backgroundColor } = req.body;
+        const profile = new Profile({
+            user: req.user.id,
+            profileImage,
+            bannerImage,
+            bio,
+            backgroundColor
+        });
         await profile.save();
-        console.log('Profile created:', profile); // Log the created profile
         res.status(201).send(profile);
     } catch (error) {
-        console.error('Error creating profile:', error); // Log the error
+        console.error('Error creating profile:', error);
         res.status(400).send(error);
     }
 });
+
+// Read profile route
+app.get('/profiles/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const profile = await Profile.findOne({ user: userId });
+
+        if (!profile) {
+            return res.status(404).send({ message: 'Profile not found' });
+        }
+
+        res.status(200).send(profile);
+    } catch (error) {
+        console.error('Error fetching profile:', error);
+        res.status(400).send(error);
+    }
+});
+
+// Read users by username route
+app.get('/users/:username', authenticateUser, async (req, res) => {
+    try {
+      const username = req.params.username;
+      const user = await User.findOne({ username });
+  
+      if (!user) {
+        return res.status(404).send({ message: 'User not found' });
+      }
+  
+      res.status(200).send(user);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      res.status(400).send(error);
+    }
+  });
+
 
 // Read all users route
 app.get('/users', async (req, res) => {
@@ -50,26 +98,204 @@ app.get('/users', async (req, res) => {
         res.status(400).send(error);
     }
 });
-
-// Read users by username route
-app.get('/users/username/:username', async (req, res) => {
+// Update profile route
+app.put('/profiles/:userId', authenticateUser, async (req, res) => {
     try {
-        const username = req.params.username;
-        const users = await User.find({ username: new RegExp(username, 'i') });
-        if (users.length === 0) {
-            return res.status(404).send({ message: 'No users found' });
+        const userId = req.params.userId;
+        const updatedProfile = await Profile.findOneAndUpdate(
+            { user: userId },
+            req.body,
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedProfile) {
+            return res.status(404).send({ message: 'Profile not found' });
         }
-        res.status(200).send(users);
+
+        res.status(200).send(updatedProfile);
     } catch (error) {
-        console.error('Error fetching users by username:', error);
+        console.error('Error updating profile:', error);
         res.status(400).send(error);
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+// Delete profile route
+app.delete('/profiles/:userId', authenticateUser, async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const deletedProfile = await Profile.findOneAndDelete({ user: userId });
+
+        if (!deletedProfile) {
+            return res.status(404).send({ message: 'Profile not found' });
+        }
+
+        res.status(200).send(deletedProfile);
+    } catch (error) {
+        console.error('Error deleting profile:', error);
+        res.status(400).send(error);
+    }
 });
 
-mongoose.connect('mongodb+srv://mmitchell:Tuff12top@cluster0.fm4mkz2.mongodb.net/CharacterCove')
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error(err));
+
+// Update user route
+app.put('/users', authenticateUser, async (req, res) => {
+    try {
+        const userId = req.user.id; // Extract user ID from the authenticated user
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            req.body,
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        res.status(200).send(updatedUser);
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(400).send(error);
+    }
+});
+
+// Delete user route
+app.delete('/delete/:username', async (req, res) => {
+    try {
+        const username = req.params.username;
+        const deletedUser = await User.findOneAndDelete(
+            { username: new RegExp(username, 'i') }
+        );
+        if (!deletedUser) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+        res.status(200).send(deletedUser);
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(400).send(error);
+    }
+});
+
+// Login route
+app.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).send({ message: 'Invalid credentials' });
+        }
+
+        // Generate JWT token
+        const token = jwt.sign({ id: user._id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
+
+        res.status(200).send({ user, token });
+        console.log(user)
+    } catch (error) {
+        console.error('Error logging in:', error);
+        res.status(400).send(error);
+    }
+});
+
+// Create character route
+app.post('/characters', authenticateUser, async (req, res) => {
+    try {
+        const { name, quote, birthday, age, height, gender, pronouns, nickname, birthPlace, currentResidence, family, occupation, tags, personality, appearance, history, images } = req.body;
+        const character = new Character({
+            user: req.user.id,
+            name,
+            quote,
+            birthday,
+            age,
+            height,
+            gender,
+            pronouns,
+            nickname,
+            birthPlace,
+            currentResidence,
+            family,
+            occupation,
+            tags,
+            personality,
+            appearance,
+            history,
+            images
+        });
+        await character.save();
+        res.status(201).send(character);
+    } catch (error) {
+        console.error('Error creating character:', error);
+        res.status(400).send(error);
+    }
+});
+
+// Get all characters for the authenticated user
+app.get('/characters', authenticateUser, async (req, res) => {
+    try {
+        const characters = await Character.find({ user: req.user.id });
+        res.status(200).send(characters);
+    } catch (error) {
+        console.error('Error fetching characters:', error);
+        res.status(400).send(error);
+    }
+});
+
+// Get a specific character by ID
+app.get('/characters/:id', authenticateUser, async (req, res) => {
+    try {
+        const characterId = req.params.id;
+        const character = await Character.findOne({ _id: characterId, user: req.user.id });
+
+        if (!character) {
+            return res.status(404).send({ message: 'Character not found' });
+        }
+
+        res.status(200).send(character);
+    } catch (error) {
+        console.error('Error fetching character:', error);
+        res.status(400).send(error);
+    }
+});
+
+// Update character route
+app.put('/characters/:id', authenticateUser, async (req, res) => {
+    try {
+        const characterId = req.params.id;
+        const updatedCharacter = await Character.findOneAndUpdate(
+            { _id: characterId, user: req.user.id },
+            req.body,
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedCharacter) {
+            return res.status(404).send({ message: 'Character not found' });
+        }
+
+        res.status(200).send(updatedCharacter);
+    } catch (error) {
+        console.error('Error updating character:', error);
+        res.status(400).send(error);
+    }
+});
+
+// Delete character route
+app.delete('/characters/:id', authenticateUser, async (req, res) => {
+    try {
+        const characterId = req.params.id;
+        const deletedCharacter = await Character.findOneAndDelete({ _id: characterId, user: req.user.id });
+
+        if (!deletedCharacter) {
+            return res.status(404).send({ message: 'Character not found' });
+        }
+
+        res.status(200).send(deletedCharacter);
+    } catch (error) {
+        console.error('Error deleting character:', error);
+        res.status(400).send(error);
+    }
+});

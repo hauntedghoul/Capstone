@@ -1,31 +1,83 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
-import './signup.css'
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './signup.css';
 
+const Signup = () => {
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const navigate = useNavigate();
 
-const signup = () => {
-  return (
-    <div className='sign-container'>
+    const handleSignup = async () => {
+        if (password !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
+        }
+
+        try {
+            const res = await axios.post('http://localhost:6969/register', {
+                email,
+                username,
+                password
+            });
+            console.log('User registered:', res.data);
+            navigate('/createprofile');
+        } catch (error) {
+            console.log('Error registering user:', error);
+        }
+    };
+
+    return (
+        <div className='sign-container'>
             <div>
                 <img className='sign-logo' src='/images/logo.png' alt='logo' />
             </div>
-
             <div>
-                <input type="text" id="email" name="email" className="sign-input" placeholder="Email" />
+                <input
+                    type="text"
+                    id="email"
+                    name="email"
+                    className="sign-input"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
                 <br />
-                <input type="text" id="username" name="username" className="sign-input" placeholder="username" />
-                <input type="text" id="password" name="password" className="sign-input" placeholder="password" />
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    className="sign-input"
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    className="sign-input"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
                 <br />
-                <input type="text" id="confirm" name="confirm" className="sign-input" placeholder="confirm password" />
+                <input
+                    type="password"
+                    id="confirm"
+                    name="confirm"
+                    className="sign-input"
+                    placeholder="Confirm Password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                />
             </div>
-
-            <Link to="/createprofile" >
-                <button className='login'>SIGNUP</button>
-            </Link>
-            <p className='signup'>Already have an account? Click <Link to="/login" > Here</Link> to login.</p>
-            
+            <button className='login' onClick={handleSignup}>SIGNUP</button>
+            <p className='signup'>Already have an account? Click <Link to="/login">Here</Link> to login.</p>
         </div>
-  )
-}
+    );
+};
 
-export default signup
+export default Signup;
