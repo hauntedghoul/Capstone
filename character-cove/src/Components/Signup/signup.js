@@ -4,28 +4,35 @@ import axios from 'axios';
 import './signup.css';
 
 const Signup = () => {
-    const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
 
     const handleSignup = async () => {
         if (password !== confirmPassword) {
-            alert('Passwords do not match!');
+            alert("Passwords do not match!");
             return;
         }
 
         try {
-            const res = await axios.post('http://localhost:6969/register', {
-                email,
+            const res = await axios.post('http://localhost:6969/signup', {
                 username,
+                email,
                 password
             });
-            console.log('User registered:', res.data);
-            navigate('/createprofile');
+
+            // Save token to localStorage
+            const { token } = res.data;
+            if (token) {
+                localStorage.setItem('token', token);
+                navigate('/createprofile');
+            } else {
+                alert("Failed to get token.");
+            }
         } catch (error) {
-            console.log('Error registering user:', error);
+            console.error('Error signing up:', error);
         }
     };
 

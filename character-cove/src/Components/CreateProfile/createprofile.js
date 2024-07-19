@@ -31,30 +31,42 @@ const CreateProfile = () => {
     const handleBannerChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setBannerSrc(URL.createObjectURL(file));
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setBannerSrc(reader.result);
+            };
+            reader.readAsDataURL(file);
         }
     };
-
+    
     const handlePfpChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setPfpSrc(URL.createObjectURL(file));
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPfpSrc(reader.result);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
     const handleSubmit = async () => {
         try {
             const token = localStorage.getItem('token');
+            console.log('Token:', token); // Add this line to check if token is being retrieved
+    
+            const formData = new FormData();
+            formData.append('profileImage', fileInputRefPfp.current.files[0]);
+            formData.append('bannerImage', fileInputRefBanner.current.files[0]);
+            formData.append('bio', bio);
+            formData.append('backgroundColor', color);
+    
             const res = await axios.post(
                 'http://localhost:6969/profiles',
-                {
-                    profileImage: pfpSrc,
-                    bannerImage: bannerSrc,
-                    bio,
-                    backgroundColor: color
-                },
+                formData,
                 {
                     headers: {
+                        'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${token}`
                     }
                 }

@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import './account.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-
 const Account = () => {
   const [username, setUsername] = useState('');
+  const [bio, setBio] = useState(''); // Added state for bio
+  const [profileImage, setProfileImage] = useState(''); // State for profile image
+  const [bannerImage, setBannerImage] = useState(''); // State for banner image
   const [userData, setUserData] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const token = localStorage.getItem('token'); // Assuming you store the JWT in localStorage
+        const token = localStorage.getItem('token');
         if (!token) {
           throw new Error('No token found');
         }
@@ -20,23 +23,39 @@ const Account = () => {
         const decodedToken = jwtDecode(token);
         const username = decodedToken.username;
 
-        const response = await axios.get(`http://localhost:6969/users/${username}`, {
+        // Fetch user data
+        const userResponse = await axios.get(`http://localhost:6969/users/${username}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
 
-        const profile = await axios.get(``);
+        // Fetch profile data
+        const profileResponse = await axios.get(`http://localhost:6969/profiles/${userResponse.data._id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
 
-        setUserData(profile.data);
-        setUsername(response.data.username);
+        setUserData(userResponse.data);
+        setUsername(userResponse.data.username);
+        setBio(profileResponse.data.bio); // Set bio from profile response
+        setProfileImage(profileResponse.data.profileImage); // Set profile image
+        setBannerImage(profileResponse.data.bannerImage); // Set banner image
+
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Error fetching user or profile data:', error);
+        navigate('/login'); // Redirect to login page
       }
     };
 
     fetchUserData();
-  }, []);
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
 
   if (!userData) {
     return <div>Loading...</div>;
@@ -45,11 +64,12 @@ const Account = () => {
   return (
     <div className='account-container'>
       <div className='banner-container'>
-        <img src='/images/Banner.jpg' alt='banner' className='banner' />
-        <img src='/images/pfp.jpg' alt='pfp' className='profile-picture' />
+        <img src={bannerImage || '/images/default-banner.png'} alt='banner' className='banner' />
+        <img src={profileImage || '/images/default-profile.jpg'} alt='pfp' className='profile-picture' />
         <Link to="/edit">
           <button className='edit-button'>Edit</button>
         </Link>
+        <button className='logout-button' onClick={handleLogout}>Logout</button>
       </div>
       <div className='info-container'>
         <p className='pf-user'>@{username}</p>
@@ -66,7 +86,7 @@ const Account = () => {
         <div> 
           <h3 className='bio'>BIO</h3>
           <div className='bio-text'>
-            Howdy! I'm Rooster (wow really), and for several years I have had a strong love for creating characters of my own! Currently I am trying to get a degree in web development and am making this all on my lonesome. A big problem I noticed a while ago within the OC community is the lack of places to store and share your characters that you put so much work into, or a place to talk to others and get help/ideas for your characters! I can't wait to see what people do with this when I am finally done and able to use it (if you're reading this I would like to think this is open to the public now :]). 
+            {bio} {/* Display the bio here */}
           </div>
         </div>
       </div>

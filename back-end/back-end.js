@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { User, Profile, Character } = require('./dal/mongo-dal');
@@ -10,7 +11,8 @@ const app = express();
 const port = 6969;
 
 app.use(cors());
-app.use(express.json()); // To parse JSON bodies
+app.use(express.json({ limit: '50mb' })); // Increase the payload limit
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
@@ -21,13 +23,17 @@ mongoose.connect('mongodb+srv://mmitchell:Tuff12top@cluster0.fm4mkz2.mongodb.net
   .catch(err => console.error(err));
 
 // User creation route
-app.post('/register', async (req, res) => {
+app.post('/signup', async (req, res) => {
     try {
         const { username, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({ username, email, password: hashedPassword });
         await user.save();
-        res.status(201).send(user);
+        
+        // Generate JWT token
+        const token = jwt.sign({ id: user._id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
+
+        res.status(201).send({ user, token });
     } catch (error) {
         console.error('Error creating user:', error);
         res.status(400).send(error);
@@ -57,16 +63,15 @@ app.post('/profiles', authenticateUser, async (req, res) => {
 app.get('/profiles/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
-        const profile = await Profile.findOne({ user: userId });
-
+        const profile = await Profile.findOne({ user: new ObjectId(userId) });
         if (!profile) {
-            return res.status(404).send({ message: 'Profile not found' });
+            return res.status(404).json({ message: 'Profile not found' });
         }
-
-        res.status(200).send(profile);
+        res.json(profile);
+        console.log(profile);
     } catch (error) {
         console.error('Error fetching profile:', error);
-        res.status(400).send(error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
