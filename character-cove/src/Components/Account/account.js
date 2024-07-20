@@ -14,43 +14,44 @@ const Account = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No token found');
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('No token found');
+            }
+
+            const decodedToken = jwtDecode(token);
+            const username = decodedToken.username;
+
+            const userResponse = await axios.get(`http://localhost:6969/users/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const profileResponse = await axios.get(`http://localhost:6969/profiles/${userResponse.data._id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            setUserData(userResponse.data);
+            setUsername(userResponse.data.username);
+            setBio(profileResponse.data.bio);
+            setProfileImage(profileResponse.data.profileImage);
+            setBannerImage(profileResponse.data.bannerImage);
+
+            console.log('Profile Image URL:', `http://localhost:6969${profileResponse.data.profileImage}`);
+            console.log('Banner Image URL:', `http://localhost:6969${profileResponse.data.bannerImage}`);
+
+        } catch (error) {
+            console.error('Error fetching user or profile data:', error);
+            navigate('/login');
         }
-
-        const decodedToken = jwtDecode(token);
-        const username = decodedToken.username;
-
-        // Fetch user data
-        const userResponse = await axios.get(`http://localhost:6969/users/${username}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        // Fetch profile data
-        const profileResponse = await axios.get(`http://localhost:6969/profiles/${userResponse.data._id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        setUserData(userResponse.data);
-        setUsername(userResponse.data.username);
-        setBio(profileResponse.data.bio); // Set bio from profile response
-        setProfileImage(profileResponse.data.profileImage); // Set profile image
-        setBannerImage(profileResponse.data.bannerImage); // Set banner image
-
-      } catch (error) {
-        console.error('Error fetching user or profile data:', error);
-        navigate('/login'); // Redirect to login page
-      }
     };
 
     fetchUserData();
-  }, [navigate]);
+}, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -64,8 +65,8 @@ const Account = () => {
   return (
     <div className='account-container'>
       <div className='banner-container'>
-        <img src={bannerImage || '/images/default-banner.png'} alt='banner' className='banner' />
-        <img src={profileImage || '/images/default-profile.jpg'} alt='pfp' className='profile-picture' />
+      <img src={bannerImage ? `http://localhost:6969${bannerImage}` : '/images/default-banner.png'} alt='banner' className='banner' />
+        <img src={profileImage ? `http://localhost:6969${profileImage}` : '/images/default-profile.jpg'} alt='pfp' className='profile-picture' />
         <Link to="/edit">
           <button className='edit-button'>Edit</button>
         </Link>

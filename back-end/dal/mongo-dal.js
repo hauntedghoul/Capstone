@@ -219,7 +219,6 @@ const profileSchema = new mongoose.Schema({
   },
   backgroundColor: {
       type: String,
-      required: true
   }
 }, { timestamps: true });
 

@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
 const { User, Profile, Character } = require('./dal/mongo-dal');
 const authenticateUser = require('./middelware/authenticate');
 
@@ -13,6 +15,18 @@ const port = 6969;
 app.use(cors());
 app.use(express.json({ limit: '50mb' })); // Increase the payload limit
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/uploads/'); // Specify the directory to store uploaded files
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`); // Set the file name to be unique
+    }
+});
+
+const upload = multer({ storage: storage });
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
@@ -41,9 +55,15 @@ app.post('/signup', async (req, res) => {
 });
 
 // Profile creation route
-app.post('/profiles', authenticateUser, async (req, res) => {
+app.post('/profiles', authenticateUser, upload.fields([{ name: 'profileImage' }, { name: 'bannerImage' }]), async (req, res) => {
     try {
-        const { profileImage, bannerImage, bio, backgroundColor } = req.body;
+        const { bio, backgroundColor } = req.body;
+        const profileImage = `/uploads/${req.files['profileImage'][0].filename}`;
+        const bannerImage = `/uploads/${req.files['bannerImage'][0].filename}`;
+
+        console.log('Profile Image Path:', profileImage);
+        console.log('Banner Image Path:', bannerImage);
+
         const profile = new Profile({
             user: req.user.id,
             profileImage,
@@ -51,6 +71,7 @@ app.post('/profiles', authenticateUser, async (req, res) => {
             bio,
             backgroundColor
         });
+
         await profile.save();
         res.status(201).send(profile);
     } catch (error) {
@@ -184,15 +205,17 @@ app.delete('/delete/:username', async (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ username: new RegExp(`^${username}$`, 'i') });
 
         if (!user) {
+            console.error('User not found:', username);
             return res.status(404).send({ message: 'User not found' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
+            console.error('Invalid credentials for user:', username);
             return res.status(400).send({ message: 'Invalid credentials' });
         }
 
@@ -200,7 +223,7 @@ app.post('/login', async (req, res) => {
         const token = jwt.sign({ id: user._id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
 
         res.status(200).send({ user, token });
-        console.log(user)
+        console.log('User logged in:', user);
     } catch (error) {
         console.error('Error logging in:', error);
         res.status(400).send(error);
