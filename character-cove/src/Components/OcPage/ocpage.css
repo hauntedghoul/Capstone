@@ -3,3 +3,46 @@
     font-size: x-large;
     font-weight: normal;
 }
+
+.persona-container{
+  text-align: center;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; 
+    
+  }
+  
+  .tags{
+    width: auto;
+    height: fit-content;
+    margin-left: 150px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    padding: 5px 10px;
+  }
+  .tag-item {
+    padding: 20px;
+    font-size: large;
+    color: #333;
+    border: 1px solid #ddd;
+  }
+
+  .images-container {
+    margin-top: 20px;
+  }
+  
+  .image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Space between images */
+  }
+  
+  .character-image {
+    width: 150px; /* Adjust size as needed */
+    height: auto;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }

@@ -53,11 +53,18 @@ const CreateProfile = () => {
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem('token');
-      console.log('Token:', token); // Add this line to check if token is being retrieved
+      if (!token) {
+        alert('No authentication token found. Please log in.');
+        return;
+      }
 
       const formData = new FormData();
-      formData.append('profileImage', fileInputRefPfp.current.files[0]);
-      formData.append('bannerImage', fileInputRefBanner.current.files[0]);
+      if (fileInputRefPfp.current.files[0]) {
+        formData.append('profileImage', fileInputRefPfp.current.files[0]);
+      }
+      if (fileInputRefBanner.current.files[0]) {
+        formData.append('bannerImage', fileInputRefBanner.current.files[0]);
+      }
       formData.append('bio', bio);
       formData.append('backgroundColor', color);
 
@@ -74,7 +81,7 @@ const CreateProfile = () => {
       console.log('Profile created:', res.data);
       navigate('/account');
     } catch (error) {
-      console.error('Error creating profile:', error);
+      console.error('Error creating profile:', error.response ? error.response.data : error.message);
     }
   };
 

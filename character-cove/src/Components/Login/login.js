@@ -16,24 +16,17 @@ const Login = () => {
                 password
             });
             console.log('User logged in:', res.data);
-    
-            // Store user information and token in local storage
+        
             localStorage.setItem('user', JSON.stringify(res.data.user));
             localStorage.setItem('token', res.data.token);
-    
-            // Verify local storage
-            console.log('Stored user:', localStorage.getItem('user'));
-            console.log('Stored token:', localStorage.getItem('token'));
-    
-            // Clear any previous error
+        
             setError('');
-    
-            // Log and navigate to the account page
+        
             console.log('Navigating to account page');
             navigate('/account');
         } catch (error) {
-            console.error('Error logging in:', error);
-            setError('Invalid username or password. Please try again.');
+            console.error('Error logging in:', error.response ? error.response.data : error.message);
+            setError(error.response ? error.response.data.message : 'An error occurred. Please try again.');
         }
     };
     

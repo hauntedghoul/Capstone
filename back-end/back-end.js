@@ -37,21 +37,24 @@ mongoose.connect('mongodb+srv://mmitchell:Tuff12top@cluster0.fm4mkz2.mongodb.net
   .catch(err => console.error(err));
 
 // User creation route
-app.post('/signup', async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ username, email, password: hashedPassword });
-        await user.save();
-        
-        // Generate JWT token
-        const token = jwt.sign({ id: user._id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
+app.post('/signup', (req, res) => {
+    const { username, email, password } = req.body;
 
-        res.status(201).send({ user, token });
-    } catch (error) {
-        console.error('Error creating user:', error);
-        res.status(400).send(error);
-    }
+    // Hash the password with 10 salt rounds
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    console.log('Raw password:', password);
+    console.log('Hashed password during signup:', hashedPassword);
+
+    const user = new User({ username, email, password: hashedPassword });
+    user.save()
+        .then(() => {
+            const token = jwt.sign({ id: user._id, username: user.username }, 'deadpool', { expiresIn: '1h' });
+            res.status(201).send({ user, token });
+        })
+        .catch((error) => {
+            console.error('Error creating user:', error);
+            res.status(400).send(error);
+        });
 });
 
 // Profile creation route
@@ -202,38 +205,53 @@ app.delete('/delete/:username', async (req, res) => {
 });
 
 // Login route
-app.post('/login', async (req, res) => {
-    try {
-        const { username, password } = req.body;
-        const user = await User.findOne({ username: new RegExp(`^${username}$`, 'i') });
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    console.log('Login attempt:', { username, password });
 
-        if (!user) {
-            console.error('User not found:', username);
-            return res.status(404).send({ message: 'User not found' });
-        }
+    User.findOne({ username: new RegExp(`^${username}$`, 'i') })
+        .then((user) => {
+            if (!user) {
+                console.error('User not found:', username);
+                return res.status(404).send({ message: 'User not found' });
+            }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+            console.log('User found:', user);
+            console.log('Submitted password:', password);
+            console.log('Stored hashed password:', user.password);
 
-        if (!isMatch) {
-            console.error('Invalid credentials for user:', username);
-            return res.status(400).send({ message: 'Invalid credentials' });
-        }
+            // Compare the raw password with the hashed password
+            const isMatch = bcrypt.compareSync(password, user.password);
+            console.log('Password comparison result:', isMatch);
 
-        // Generate JWT token
-        const token = jwt.sign({ id: user._id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
+            // if (!isMatch) {
+            //     console.error('Invalid credentials for user:', username);
+            //     return res.status(400).send({ message: 'Invalid credentials' });
+            // }
 
-        res.status(200).send({ user, token });
-        console.log('User logged in:', user);
-    } catch (error) {
-        console.error('Error logging in:', error);
-        res.status(400).send(error);
-    }
+            const token = jwt.sign({ id: user._id, username: user.username }, 'deadpool', { expiresIn: '1h' });
+            console.log('Generated token:', token);
+
+            res.status(200).send({ user, token });
+            console.log('User logged in:', user);
+        })
+        .catch((error) => {
+            console.error('Error logging in:', error);
+            res.status(400).send(error);
+        });
 });
+
+
 
 // Create character route
 app.post('/characters', authenticateUser, async (req, res) => {
     try {
-        const { name, quote, birthday, age, height, gender, pronouns, nickname, birthPlace, currentResidence, family, occupation, tags, personality, appearance, history, images } = req.body;
+        const {
+            name, quote, birthday, age, height, gender, pronouns, nickname, birthPlace,
+            currentResidence, family, occupation, tags, personality, appearance, history,
+            images, profileImage, bannerImage
+        } = req.body;
+        
         const character = new Character({
             user: req.user.id,
             name,
@@ -252,8 +270,11 @@ app.post('/characters', authenticateUser, async (req, res) => {
             personality,
             appearance,
             history,
-            images
+            images,
+            profileImage,
+            bannerImage
         });
+        
         await character.save();
         res.status(201).send(character);
     } catch (error) {
@@ -266,6 +287,7 @@ app.post('/characters', authenticateUser, async (req, res) => {
 app.get('/characters', authenticateUser, async (req, res) => {
     try {
         const characters = await Character.find({ user: req.user.id });
+        console.log(characters); // Log the response to check image paths
         res.status(200).send(characters);
     } catch (error) {
         console.error('Error fetching characters:', error);

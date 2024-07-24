@@ -6,52 +6,62 @@ import { jwtDecode } from 'jwt-decode';
 
 const Account = () => {
   const [username, setUsername] = useState('');
-  const [bio, setBio] = useState(''); // Added state for bio
-  const [profileImage, setProfileImage] = useState(''); // State for profile image
-  const [bannerImage, setBannerImage] = useState(''); // State for banner image
+  const [bio, setBio] = useState('');
+  const [profileImage, setProfileImage] = useState('');
+  const [bannerImage, setBannerImage] = useState('');
   const [userData, setUserData] = useState(null);
+  const [characters, setCharacters] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('No token found');
-            }
-
-            const decodedToken = jwtDecode(token);
-            const username = decodedToken.username;
-
-            const userResponse = await axios.get(`http://localhost:6969/users/${username}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            const profileResponse = await axios.get(`http://localhost:6969/profiles/${userResponse.data._id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            setUserData(userResponse.data);
-            setUsername(userResponse.data.username);
-            setBio(profileResponse.data.bio);
-            setProfileImage(profileResponse.data.profileImage);
-            setBannerImage(profileResponse.data.bannerImage);
-
-            console.log('Profile Image URL:', `http://localhost:6969${profileResponse.data.profileImage}`);
-            console.log('Banner Image URL:', `http://localhost:6969${profileResponse.data.bannerImage}`);
-
-        } catch (error) {
-            console.error('Error fetching user or profile data:', error);
-            navigate('/login');
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No token found');
         }
+
+        const decodedToken = jwtDecode(token);
+        const username = decodedToken.username;
+
+        const userResponse = await axios.get(`http://localhost:6969/users/${username}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const profileResponse = await axios.get(`http://localhost:6969/profiles/${userResponse.data._id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        setUserData(userResponse.data);
+        setUsername(userResponse.data.username);
+        setBio(profileResponse.data.bio);
+        setProfileImage(profileResponse.data.profileImage);
+        setBannerImage(profileResponse.data.bannerImage);
+
+        console.log('Profile Image URL:', `http://localhost:6969${profileResponse.data.profileImage}`);
+        console.log('Banner Image URL:', `http://localhost:6969${profileResponse.data.bannerImage}`);
+
+        // Fetch user characters
+        const charactersResponse = await axios.get(`http://localhost:6969/characters?userId=${userResponse.data._id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        setCharacters(charactersResponse.data);
+
+      } catch (error) {
+        console.error('Error fetching user or profile data:', error);
+        navigate('/login');
+      }
     };
 
     fetchUserData();
-}, [navigate]);
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -65,7 +75,7 @@ const Account = () => {
   return (
     <div className='account-container'>
       <div className='banner-container'>
-      <img src={bannerImage ? `http://localhost:6969${bannerImage}` : '/images/default-banner.png'} alt='banner' className='banner' />
+        <img src={bannerImage ? `http://localhost:6969${bannerImage}` : '/images/default-banner.png'} alt='banner' className='banner' />
         <img src={profileImage ? `http://localhost:6969${profileImage}` : '/images/default-profile.jpg'} alt='pfp' className='profile-picture' />
         <Link to="/edit">
           <button className='edit-button'>Edit</button>
@@ -84,22 +94,22 @@ const Account = () => {
             <div className='number'>00</div>
           </div>
         </div>
-        <div> 
+        <div>
           <h3 className='bio'>BIO</h3>
           <div className='bio-text'>
-            {bio} {/* Display the bio here */}
+            {bio}
           </div>
         </div>
       </div>
       <div className='character-container'>
-        <img className='characters' src='/images/Sam.jpg' alt='sam' />
-        <img className='characters' src='/images/Rooster.jpg' alt='sam' />
-        <img className='characters' src='/images/Doc.png' alt='sam' />
-        <img className='characters' src='/images/Graves.png' alt='sam' />
-        <img className='characters' src='/images/Sam.jpg' alt='sam' />
-        <img className='characters' src='/images/Rooster.jpg' alt='sam' />
-        <img className='characters' src='/images/Doc.png' alt='sam' />
-        <img className='characters' src='/images/Graves.png' alt='sam' />
+        {characters.map(character => (
+          <div key={character._id} className='character-item'>
+            <Link to={`/ocpage/${character._id}`}>
+              <img className='characters' src={character.profileImage } alt={character.name} />
+            </Link>
+            <p>{character.name}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

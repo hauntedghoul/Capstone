@@ -21,7 +21,7 @@ const Navbar = () => {
                         < img src='./images/Post.png' className='navbarimg' alt='search' />
                         Post</Link></li>
                     <li><Link to="/notification">
-                        < img src='./images/Notif.png' className='navbarimg' alt='notification' />
+                        < img src='./images/Notif.png' className='navbarimg' alt='notif' />
                         notification</Link></li>
                     <li><Link to="/browse">
                         < img src='./images/Browse.png' className='navbarimg' alt='browse' />

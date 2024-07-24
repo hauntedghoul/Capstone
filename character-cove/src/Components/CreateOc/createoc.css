@@ -16,13 +16,14 @@
     bottom: 300px;
     left: 500px;
     width: 200px;
-    height: 200px;
+    height:min-content;
     border-radius: 20%;
     border: 10px solid white;
 }
 
 .name {
     font-size: larger;
+    width: fit-content;
     margin-left: 320px;
 }
 
@@ -47,7 +48,21 @@
 .quote {
     color: white;
     font-size: large;
+    width: 700px;
     background-color: #86BBBD;
+}
+
+.tag-holder{
+    color: black;
+    text-align: center;
+    width: 500px;
+    height: fit-content;
+    background-color: white;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 25px;
+    margin-left: 20px;
+    margin-bottom: 30px;
 }
 
 .oc-name {
@@ -59,13 +74,13 @@
 .tags{
     color: black;
     text-align: center;
-    width: 500px;
+    /* width: 500px; */
     height: fit-content;
-    background-color: white;
-    padding: 10px;
+    /* background-color: white; */
+    /* padding: 10px; */
     font-weight: bold;
     border-radius: 25px;
-    margin-left: 20px;
+    /* margin-left: 20px; */
 }
 
 .tag-button{

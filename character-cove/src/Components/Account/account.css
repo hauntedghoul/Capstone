@@ -119,6 +119,12 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 50px;
+    text-align: center;
+    font-weight: bolder;
+    font-size: large;
+    background-color: #6A6B83;
+    padding: 20px;
+    border-radius: 20px;
 
 }
 
@@ -127,5 +133,7 @@ body {
     height: 250px;
     gap: 50px;
     align-items: center;
+    border: solid white 5px;
+    border-radius: 20px;
 
 }

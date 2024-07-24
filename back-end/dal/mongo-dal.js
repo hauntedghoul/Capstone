@@ -110,6 +110,14 @@ const characterSchema = new mongoose.Schema({
             enum: ['url', 'file'],
         },
     }],
+    profileImage: {
+        type: String,
+        default: ''
+    },
+    bannerImage: {
+        type: String,
+        default: ''
+    },
 });
 
 const postSchema = new mongoose.Schema({

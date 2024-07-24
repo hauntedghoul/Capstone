@@ -66,7 +66,7 @@ function App() {
                 <Notifcation />
               </PrivateRoute>
             } />
-            <Route path="/ocpage" element={
+            <Route path="/ocpage/:id" element={
               <PrivateRoute>
                 <OCPage />
               </PrivateRoute>
