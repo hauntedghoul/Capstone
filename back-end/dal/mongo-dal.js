@@ -118,7 +118,7 @@ const characterSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-});
+}, { timestamps: true });
 
 const postSchema = new mongoose.Schema({
     user: {

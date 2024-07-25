@@ -22,7 +22,7 @@ function App() {
   return (
     <Router>
       <div>
-        <Header />
+        <Header/>
         <Navbar />
         <div className='main'>
           <Routes>

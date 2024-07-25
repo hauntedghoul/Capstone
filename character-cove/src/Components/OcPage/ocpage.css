@@ -18,7 +18,7 @@
   .tags{
     width: auto;
     height: fit-content;
-    margin-left: 150px;
+    margin-left: 50px;
     background-color: #f0f0f0;
     border-radius: 5px;
     padding: 5px 10px;
@@ -37,12 +37,12 @@
   .image-gallery {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Space between images */
+    gap: 25px;
   }
   
   .character-image {
-    width: 150px; /* Adjust size as needed */
-    height: auto;
+    max-width: 400px;
+    max-height: 400px;
     border-radius: 5px;
     border: 1px solid #ddd;
   }

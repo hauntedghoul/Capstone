@@ -116,7 +116,6 @@ app.get('/users/:username', authenticateUser, async (req, res) => {
     }
   });
 
-
 // Read all users route
 app.get('/users', async (req, res) => {
     try {
@@ -164,7 +163,6 @@ app.delete('/profiles/:userId', authenticateUser, async (req, res) => {
         res.status(400).send(error);
     }
 });
-
 
 // Update user route
 app.put('/users', authenticateUser, async (req, res) => {
@@ -241,8 +239,6 @@ app.post('/login', (req, res) => {
         });
 });
 
-
-
 // Create character route
 app.post('/characters', authenticateUser, async (req, res) => {
     try {
@@ -296,10 +292,10 @@ app.get('/characters', authenticateUser, async (req, res) => {
 });
 
 // Get a specific character by ID
-app.get('/characters/:id', authenticateUser, async (req, res) => {
+app.get('/characters/:id', async (req, res) => {
     try {
         const characterId = req.params.id;
-        const character = await Character.findOne({ _id: characterId, user: req.user.id });
+        const character = await Character.findById(characterId);
 
         if (!character) {
             return res.status(404).send({ message: 'Character not found' });
@@ -346,6 +342,17 @@ app.delete('/characters/:id', authenticateUser, async (req, res) => {
         res.status(200).send(deletedCharacter);
     } catch (error) {
         console.error('Error deleting character:', error);
+        res.status(400).send(error);
+    }
+});
+
+// Get all characters sorted by creation date
+app.get('/all-characters', async (req, res) => {
+    try {
+        const characters = await Character.find().sort({ createdAt: -1 });
+        res.status(200).send(characters);
+    } catch (error) {
+        console.error('Error fetching characters:', error);
         res.status(400).send(error);
     }
 });

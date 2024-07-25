@@ -20,7 +20,7 @@ const OcPage = () => {
         return response.json();
       })
       .then(data => {
-        console.log('Fetched character data:', data); // Debugging line
+        console.log('Fetched character data:', data);
         setCharacter(data);
       })
       .catch(error => {
@@ -29,7 +29,7 @@ const OcPage = () => {
   }, [id]);
 
   if (!character) {
-    return <div> Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   return (
@@ -88,7 +88,7 @@ const OcPage = () => {
                 <img
                   key={index}
                   className='character-image'
-                  src={image}
+                  src={image.src}
                   alt={`character ${index}`}
                 />
               ))
