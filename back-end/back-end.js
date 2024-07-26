@@ -227,7 +227,7 @@ app.post('/login', (req, res) => {
             //     return res.status(400).send({ message: 'Invalid credentials' });
             // }
 
-            const token = jwt.sign({ id: user._id, username: user.username }, 'deadpool', { expiresIn: '1h' });
+            const token = jwt.sign({ id: user._id, username: user.username }, 'deadpool');
             console.log('Generated token:', token);
 
             res.status(200).send({ user, token });
@@ -312,15 +312,29 @@ app.get('/characters/:id', async (req, res) => {
 app.put('/characters/:id', authenticateUser, async (req, res) => {
     try {
         const characterId = req.params.id;
-        const updatedCharacter = await Character.findOneAndUpdate(
-            { _id: characterId, user: req.user.id },
-            req.body,
-            { new: true, runValidators: true }
-        );
+        const { imagesToAdd = [], imagesToRemove = [], ...rest } = req.body;
 
-        if (!updatedCharacter) {
+        // Fetch the current character data
+        const character = await Character.findOne({ _id: characterId, user: req.user.id });
+
+        if (!character) {
             return res.status(404).send({ message: 'Character not found' });
         }
+
+        // Add new images
+        if (imagesToAdd.length > 0) {
+            character.images = [...character.images, ...imagesToAdd];
+        }
+
+        // Remove specified images
+        if (imagesToRemove.length > 0) {
+            character.images = character.images.filter(img => !imagesToRemove.includes(img.src));
+        }
+
+        // Update other fields
+        Object.assign(character, rest);
+
+        const updatedCharacter = await character.save();
 
         res.status(200).send(updatedCharacter);
     } catch (error) {
