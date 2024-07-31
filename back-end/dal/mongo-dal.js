@@ -126,22 +126,21 @@ const postSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    character: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Character'
-    },
     type: {
         type: String,
         enum: ['art', 'writing'],
         required: true,
     },
-    content: {
-        type: String,
-        required: true
+    title: {
+        type: String
     },
-    tags: [{
-        type: String,
-    }],
+    body: {
+        type: String
+    },
+    images: {
+        type: [String], 
+        default: []
+    },
     createdAt: {
         type: Date,
         default: Date.now

@@ -13,7 +13,6 @@ import CreateOc from './Components/CreateOc/createoc';
 import Browse from './Components/Browse/browse';
 import Notifcation from './Components/Notification/notif';
 import OCPage from './Components/OcPage/ocpage';
-import EditOc from './Components/EditOc/editoc';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './Components/Header/header';
 import PrivateRoute from './Components/PrivateRoute/privateRoute';
@@ -69,11 +68,6 @@ function App() {
             <Route path="/ocpage/:id" element={
               <PrivateRoute>
                 <OCPage />
-              </PrivateRoute>
-            } />
-            <Route path="/editoc" element={
-              <PrivateRoute>
-                <EditOc />
               </PrivateRoute>
             } />
           </Routes>

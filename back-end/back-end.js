@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
-const { User, Profile, Character } = require('./dal/mongo-dal');
+const { User, Profile, Character, Post } = require('./dal/mongo-dal');
 const authenticateUser = require('./middelware/authenticate');
 
 const app = express();
@@ -127,12 +127,23 @@ app.get('/users', async (req, res) => {
     }
 });
 // Update profile route
-app.put('/profiles/:userId', authenticateUser, async (req, res) => {
+app.put('/profiles/:userId', authenticateUser, upload.fields([{ name: 'profileImage' }, { name: 'bannerImage' }]), async (req, res) => {
     try {
         const userId = req.params.userId;
+        const { bio, backgroundColor } = req.body;
+
+        // Handle image paths if provided
+        const profileImage = req.files['profileImage'] ? `/uploads/${req.files['profileImage'][0].filename}` : undefined;
+        const bannerImage = req.files['bannerImage'] ? `/uploads/${req.files['bannerImage'][0].filename}` : undefined;
+
         const updatedProfile = await Profile.findOneAndUpdate(
             { user: userId },
-            req.body,
+            {
+                bio,
+                backgroundColor,
+                profileImage,
+                bannerImage
+            },
             { new: true, runValidators: true }
         );
 
@@ -189,13 +200,21 @@ app.put('/users', authenticateUser, async (req, res) => {
 app.delete('/delete/:username', async (req, res) => {
     try {
         const username = req.params.username;
-        const deletedUser = await User.findOneAndDelete(
-            { username: new RegExp(username, 'i') }
-        );
+
+        // Find and delete the user
+        const deletedUser = await User.findOneAndDelete({ username: new RegExp(username, 'i') });
+
         if (!deletedUser) {
             return res.status(404).send({ message: 'User not found' });
         }
-        res.status(200).send(deletedUser);
+
+        // Find the user's profile by user ID and delete it
+        const profile = await Profile.findOneAndDelete({ user: deletedUser._id });
+
+        // Delete all characters associated with the user
+        await Character.deleteMany({ user: deletedUser._id });
+
+        res.status(200).send({ message: 'User account, profile, and characters deleted successfully' });
     } catch (error) {
         console.error('Error deleting user:', error);
         res.status(400).send(error);
@@ -367,6 +386,71 @@ app.get('/all-characters', async (req, res) => {
         res.status(200).send(characters);
     } catch (error) {
         console.error('Error fetching characters:', error);
+        res.status(400).send(error);
+    }
+});
+
+//create posts
+app.post('/posts', authenticateUser, upload.array('images', 10), async (req, res) => {
+    try {
+        const imagePaths = req.files.map(file => `/uploads/${file.filename}`);
+        const post = new Post({
+            user: req.user.id,
+            title: req.body.title,
+            type: req.body.type,
+            body: req.body.body,
+            images: imagePaths, // Store the array of image paths
+        });
+        await post.save();
+        res.status(201).send(post);
+    } catch (error) {
+        console.error('Error creating post:', error);
+        res.status(500).send({ error: 'Error creating post' });
+    }
+});
+
+//get all posts
+app.get('/posts', async (req, res) => {
+    try {
+        const posts = await Post.find().sort({ createdAt: -1 });
+        res.status(200).send(posts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        res.status(400).send(error);
+    }
+});
+
+// Route to get posts by user ID
+app.get('/posts/user/:userId', authenticateUser, async (req, res) => {
+    try {
+        const posts = await Post.find({ user: req.params.userId }).sort({ createdAt: -1 });
+        res.send(posts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        res.status(500).send({ error: 'Error fetching posts' });
+    }
+});
+
+//search posts
+app.get('/posts/search', async (req, res) => {
+    try {
+        const { type, tags, keyword } = req.query;
+        let query = {};
+
+        if (type) {
+            query.type = type;
+        }
+        if (tags) {
+            query.tags = { $in: tags.split(',') };
+        }
+        if (keyword) {
+            query.content = { $regex: keyword, $options: 'i' };
+        }
+
+        const posts = await Post.find(query).sort({ createdAt: -1 });
+        res.status(200).send(posts);
+    } catch (error) {
+        console.error('Error searching posts:', error);
         res.status(400).send(error);
     }
 });

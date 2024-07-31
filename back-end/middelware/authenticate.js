@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 // Middleware to authenticate the user
 const authenticateUser = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
-
+    console.log('Token:', token);
     if (!token) {
         return res.status(401).send({ error: 'Authentication required' });
     }
