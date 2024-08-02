@@ -84,8 +84,8 @@ const Account = () => {
   return (
     <div className='account-container' style={{ backgroundColor }}>
       <div className='banner-container'>
-        <img src={bannerImage ? `http://localhost:6969${bannerImage}` : '/images/default-banner.png'} alt='banner' className='banner' />
-        <img src={profileImage ? `http://localhost:6969${profileImage}` : '/images/default-profile.jpg'} alt='pfp' className='profile-picture' />
+        <img src={bannerImage ? `http://localhost:6969${bannerImage}` : '/images/grayblock.png'} alt='banner' className='banner' />
+        <img src={profileImage ? `http://localhost:6969${profileImage}` : '/images/unknown.jpg'} alt='pfp' className='profile-picture' />
         <Link to="/edit">
           <button className='edit-button'>Edit</button>
         </Link>

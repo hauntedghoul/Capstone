@@ -1,14 +1,17 @@
 .posts {
-  display: flex; /* Use flexbox to layout posts */
+  display: flex;
   flex-wrap: wrap;
-  align-items: flex-start; /* Align items at the top */
-  justify-content: space-between; /* Add this to distribute space between items */
-  gap: 10px; /* Controls the space between items */
-  max-width: 1020px; /* Adjust this width as needed for your layout */
-  margin: auto; /* Center the posts container */
-  margin-left: 300px;
+  align-items: flex-start;
+  /* justify-content: space-between; */
+  gap: 10px;
+  /* max-width: 1020px; */
+  margin-left: -40px;
+  /* margin-left: 300px; */
 }
 
+.userpfp{
+  margin-right: -40px;
+}
 .post {
   background-color: #76949F;
   border-radius: 30px;
@@ -16,10 +19,10 @@
   width: 500px;
   font-family: monospace;
   font-size: x-large;
-  height: auto; /* Ensures the height stretches with content */
-  margin: 10px; /* Adds margin to create space between posts */
+  height: auto;
+  margin: 10px;
   padding: 20px;
-  box-sizing: border-box; /* Includes padding in the element's total width and height */
+  box-sizing: border-box;
 }
 
 .content {
@@ -29,18 +32,26 @@
 
 .postimage img {
   width: 100%;
-  height: auto; /* Allows height to adjust based on image aspect ratio */
+  height: auto;
   object-fit: cover;
 }
 
 .username {
-  display: inline-flex;
+  display: flex;
+  align-items: center;
   font-family: 'Courier New', Courier, monospace;
   font-size: medium;
-  margin-left: 20px;
+  margin-bottom: 10px;
 }
 
 .user {
-  margin-left: -20px;
-  margin-top: 40px;
+  margin-left: 10px;
+  margin-top: 0;
+}
+
+.pfp {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
 }

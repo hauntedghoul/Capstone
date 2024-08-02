@@ -99,6 +99,16 @@ app.get('/profiles/:userId', async (req, res) => {
     }
 });
 
+//get profile
+app.get('/all-profiles', async (req, res) => {
+    try {
+      const profiles = await Profile.find().sort({ createdAt: -1 });
+      res.status(200).json(profiles);
+    } catch (error) {
+      console.error('Error fetching profiles:', error);
+      res.status(500).json({ error: 'Failed to fetch profiles' });
+    }
+  });
 // Read users by username route
 app.get('/users/:username', authenticateUser, async (req, res) => {
     try {
@@ -412,7 +422,9 @@ app.post('/posts', authenticateUser, upload.array('images', 10), async (req, res
 //get all posts
 app.get('/posts', async (req, res) => {
     try {
-        const posts = await Post.find().sort({ createdAt: -1 });
+        const posts = await Post.find()
+            .populate('user', 'username pfp')
+            .sort({ createdAt: -1 });
         res.status(200).send(posts);
     } catch (error) {
         console.error('Error fetching posts:', error);
