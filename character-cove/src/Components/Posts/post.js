@@ -90,7 +90,15 @@ const Post = () => {
             </div>
             <div className='images-cont'>
                 <div className='upload-div'>
-                    <input className=" "type="file" multiple onChange={handleImageUpload} />
+                    <label className='custom-file-input-label'>
+                        Upload Files
+                        <input
+                            type='file'
+                            className='custom-file-input'
+                            multiple
+                            onChange={handleImageUpload}
+                        />
+                    </label>
                 </div>
                 <div className='upload-div-right'>
                     <input
@@ -107,7 +115,7 @@ const Post = () => {
                 {images.map((file, index) => (
                     <div key={index} className='preview'>
                         <img className='image-preview' src={URL.createObjectURL(file)} alt={`preview-${index}`} />
-                        <button onClick={() => handleRemoveImage(index)}>Remove</button>
+                        <button className='edit-button-bottom' onClick={() => handleRemoveImage(index)}>Remove</button>
                     </div>
                 ))}
                 {imageLinks.map((link, index) => (
@@ -128,7 +136,7 @@ const Post = () => {
                 ></textarea>
             </div>
             <div className='post-type-container'>
-                <label>
+                <label className='radio'>
                     <input
                         type='radio'
                         value='art'
@@ -137,7 +145,7 @@ const Post = () => {
                     />
                     ART
                 </label>
-                <label>
+                <label className='radio'>
                     <input
                         type='radio'
                         value='writing'

@@ -28,15 +28,22 @@ const Account = () => {
 
         const userResponse = await axios.get(`http://localhost:6969/users/${username}`, {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache',
+            'Expires': '0'
           }
         });
-
+    
         const profileResponse = await axios.get(`http://localhost:6969/profiles/${userResponse.data._id}`, {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache',
+            'Expires': '0'
           }
         });
+    
 
         setUserData(userResponse.data);
         setUsername(userResponse.data.username);
@@ -45,19 +52,23 @@ const Account = () => {
         setBannerImage(profileResponse.data.bannerImage);
         setBackgroundColor(profileResponse.data.backgroundColor || '#1e1e1e'); // Set background color
 
-        // Fetch user characters
         const charactersResponse = await axios.get(`http://localhost:6969/characters?userId=${userResponse.data._id}`, {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache',
+            'Expires': '0'
           }
         });
-
+    
         setCharacters(charactersResponse.data);
-
-        // Fetch user posts
+    
         const postsResponse = await axios.get(`http://localhost:6969/posts/user/${userResponse.data._id}`, {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache',
+            'Expires': '0'
           }
         });
 
@@ -73,8 +84,24 @@ const Account = () => {
   }, [navigate]);
 
   const handleLogout = () => {
+    console.log('Before removing token:', localStorage.getItem('token'));
     localStorage.removeItem('token');
+    console.log('Token removed. Current token:', localStorage.getItem('token'));
     navigate('/login');
+  };
+
+  const handleDeletePost = async (postId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:6969/posts/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setPosts(posts.filter(post => post._id !== postId));
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
   };
 
   if (!userData) {
@@ -93,7 +120,7 @@ const Account = () => {
       </div>
       <div className='info-container'>
         <p className='pf-user'>@{username}</p>
-        <div className='follow-info'>
+        {/* <div className='follow-info'>
           <div className='following'>
             FOLLOWING
             <div className='number'>00</div>
@@ -102,7 +129,7 @@ const Account = () => {
             FOLLOWERS
             <div className='number'>00</div>
           </div>
-        </div>
+        </div> */}
         <div>
           <h3 className='bio'>BIO</h3>
           <div className='bio-text'>
@@ -127,9 +154,10 @@ const Account = () => {
             <p className='pbody'>{post.body}</p>
             <div className='imgcont'>
             {post.images && post.images.map((image, index) => (
-              <img key={index} src={`http://localhost:6969${image}`} alt={`Post image ${index}`} className='pimage' />
-            ))}
+                <img key={index} src={image.startsWith('http') ? image : `http://localhost:6969${image}`} alt={`Post image ${index}`} className='pimage' />
+              ))}
             </div>
+            <button className='edit-button-bottom' onClick={() => handleDeletePost(post._id)}>Delete</button>
           </div>
         ))}
       </div>

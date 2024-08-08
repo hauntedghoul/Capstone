@@ -49,3 +49,9 @@
     margin-right: 20px;
 }
 
+.user-profile-image{
+    height: 250px;
+    width: 250px;
+    border-radius: 150px;
+    margin: 20px;
+}

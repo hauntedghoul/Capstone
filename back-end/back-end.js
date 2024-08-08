@@ -33,8 +33,8 @@ app.listen(port, () => {
 });
 
 mongoose.connect('mongodb+srv://mmitchell:Tuff12top@cluster0.fm4mkz2.mongodb.net/CharacterCove')
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error(err));
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.error(err));
 
 // User creation route
 app.post('/signup', (req, res) => {
@@ -102,29 +102,29 @@ app.get('/profiles/:userId', async (req, res) => {
 //get profile
 app.get('/all-profiles', async (req, res) => {
     try {
-      const profiles = await Profile.find().sort({ createdAt: -1 });
-      res.status(200).json(profiles);
+        const profiles = await Profile.find().sort({ createdAt: -1 });
+        res.status(200).json(profiles);
     } catch (error) {
-      console.error('Error fetching profiles:', error);
-      res.status(500).json({ error: 'Failed to fetch profiles' });
+        console.error('Error fetching profiles:', error);
+        res.status(500).json({ error: 'Failed to fetch profiles' });
     }
-  });
+});
 // Read users by username route
 app.get('/users/:username', authenticateUser, async (req, res) => {
     try {
-      const username = req.params.username;
-      const user = await User.findOne({ username });
-  
-      if (!user) {
-        return res.status(404).send({ message: 'User not found' });
-      }
-  
-      res.status(200).send(user);
+        const username = req.params.username;
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        res.status(200).send(user);
     } catch (error) {
-      console.error('Error fetching user data:', error);
-      res.status(400).send(error);
+        console.error('Error fetching user data:', error);
+        res.status(400).send(error);
     }
-  });
+});
 
 // Read all users route
 app.get('/users', async (req, res) => {
@@ -276,7 +276,7 @@ app.post('/characters', authenticateUser, async (req, res) => {
             currentResidence, family, occupation, tags, personality, appearance, history,
             images, profileImage, bannerImage
         } = req.body;
-        
+
         const character = new Character({
             user: req.user.id,
             name,
@@ -299,7 +299,7 @@ app.post('/characters', authenticateUser, async (req, res) => {
             profileImage,
             bannerImage
         });
-        
+
         await character.save();
         res.status(201).send(character);
     } catch (error) {
@@ -333,6 +333,23 @@ app.get('/characters/:id', async (req, res) => {
         res.status(200).send(character);
     } catch (error) {
         console.error('Error fetching character:', error);
+        res.status(400).send(error);
+    }
+});
+
+// Get characters by user ID
+app.get('/characters/user/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const characters = await Character.find({ user: userId });
+
+        if (!characters) {
+            return res.status(404).send({ message: 'No characters found for this user' });
+        }
+
+        res.status(200).send(characters);
+    } catch (error) {
+        console.error('Error fetching characters for user:', error);
         res.status(400).send(error);
     }
 });
@@ -403,14 +420,17 @@ app.get('/all-characters', async (req, res) => {
 //create posts
 app.post('/posts', authenticateUser, upload.array('images', 10), async (req, res) => {
     try {
-        const imagePaths = req.files.map(file => `/uploads/${file.filename}`);
+        const imagePaths = req.files ? req.files.map(file => `/uploads/${file.filename}`) : [];
+        const imageLinks = req.body.imageLinks ? req.body.imageLinks.split(',') : [];
+        
         const post = new Post({
             user: req.user.id,
             title: req.body.title,
             type: req.body.type,
             body: req.body.body,
-            images: imagePaths, // Store the array of image paths
+            images: [...imagePaths, ...imageLinks], // Combine uploaded images and image links
         });
+        
         await post.save();
         res.status(201).send(post);
     } catch (error) {
@@ -446,23 +466,101 @@ app.get('/posts/user/:userId', authenticateUser, async (req, res) => {
 //search posts
 app.get('/posts/search', async (req, res) => {
     try {
-        const { type, tags, keyword } = req.query;
-        let query = {};
-
-        if (type) {
-            query.type = type;
-        }
-        if (tags) {
-            query.tags = { $in: tags.split(',') };
-        }
-        if (keyword) {
-            query.content = { $regex: keyword, $options: 'i' };
-        }
-
-        const posts = await Post.find(query).sort({ createdAt: -1 });
+        const { keyword } = req.query;
+        const posts = await Post.find({
+            $or: [
+                { title: { $regex: keyword, $options: 'i' } },
+                { body: { $regex: keyword, $options: 'i' } }
+            ]
+        });
         res.status(200).send(posts);
     } catch (error) {
         console.error('Error searching posts:', error);
         res.status(400).send(error);
+    }
+});
+
+
+// Delete a post
+app.delete('/posts/:id', authenticateUser, async (req, res) => {
+    try {
+      const postId = req.params.id;
+      console.log('Attempting to delete post with ID:', postId); // Debug statement
+  
+      const post = await Post.findByIdAndDelete({ _id: postId, user: req.user.id });
+  
+      if (!post) {
+        console.log('Post not found'); // Debug statement
+        return res.status(404).json({ message: 'Post not found' });
+      }
+  
+      console.log('Post deleted successfully'); // Debug statement
+      res.status(200).json({ message: 'Post deleted' });
+    } catch (error) {
+      console.error('Error deleting post:', error); // Add this line to see detailed error logs
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+//search users
+app.get('/users/search', async (req, res) => {
+    try {
+        const { keyword } = req.query;
+        const users = await User.find({ username: { $regex: keyword, $options: 'i' } });
+        res.status(200).send(users);
+    } catch (error) {
+        console.error('Error searching users:', error);
+        res.status(400).send(error);
+    }
+});
+
+//search everything
+app.get('/search', async (req, res) => {
+    try {
+        const { keyword, type } = req.query;
+        let result = {
+            characters: [],
+            posts: [],
+            users: []
+        };
+
+        if (!keyword) {
+            return res.json(result); // Return empty results if no keyword
+        }
+
+        if (type === 'characters' || type === 'all') {
+            result.characters = await Character.find({
+                name: { $regex: keyword, $options: 'i' }
+            });
+        }
+
+        if (type === 'posts' || type === 'all') {
+            result.posts = await Post.find({
+                body: { $regex: keyword, $options: 'i' }
+            });
+        }
+
+        if (type === 'users' || type === 'all') {
+            result.users = await User.find({
+                username: { $regex: keyword, $options: 'i' }
+            });
+        }
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error('Error during search:', error);
+        res.status(500).send({ error: 'Search failed' });
+    }
+});
+
+app.get('/users/username/:username', async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username });
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
+        }
+        res.send(user);
+    } catch (error) {
+        res.status(500).send({ error: 'Server error' });
     }
 });

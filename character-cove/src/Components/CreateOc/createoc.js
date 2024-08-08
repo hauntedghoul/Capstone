@@ -188,10 +188,18 @@ const CreateOC = () => {
               onChange={(e) => setImageInput(e.target.value)}
               placeholder='Image URL...'
             />
-            <button onClick={handleAddImage}>Add Image</button>
+            <button className='edit-button-bottom' onClick={handleAddImage}>Add Image</button>
           </div>
           <div className='file-input'>
-            <input type='file' onChange={handleFileUpload} multiple />
+          <label className='custom-file-input-label'>
+              Select Files
+              <input
+                type='file'
+                className='custom-file-input'
+                onChange={handleFileUpload}
+                multiple
+              />
+            </label>
           </div>
           <div className='image-gallery'>
             {images.map((image, index) => (

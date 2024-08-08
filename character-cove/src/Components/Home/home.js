@@ -43,7 +43,7 @@ const Home = () => {
       {posts.map(post => (
         <div className='post' key={post._id}>
           <div className='username'>
-            <Link to={`/Account/${post.user._id}`} className='userpfp'>
+            <Link to={`/users/${post.user.username}`} className='userpfp'>
               {profiles[post.user._id] && (
                 <img 
                   src={`http://localhost:6969${profiles[post.user._id].profileImage}`} 
@@ -61,7 +61,7 @@ const Home = () => {
           {post.images.length > 0 && (
             <div className='postimage'>
               {post.images.map((image, index) => (
-                <img src={`http://localhost:6969${image}`} alt={`post-${index}`} key={index} />
+                <img src={image.startsWith('http') ? image : `http://localhost:6969${image}`} alt={`post-${index}`} key={index} />
               ))}
             </div>
           )}

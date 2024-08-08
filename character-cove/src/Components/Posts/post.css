@@ -107,7 +107,6 @@ body {
 }
 .input{
     width: 50%;
-    height: 20px;
 }
 .post-button {
     align-items: center;
@@ -140,4 +139,19 @@ body {
 
 .add-link-button:hover {
     background-color: #6A6B83; 
+}
+
+.radio{
+    font-size: x-large;
+}
+
+.custom-file-input{
+    align-items: center;
+    padding: 15px;
+    margin: 10px;
+    background-color: #5F506B;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
 }

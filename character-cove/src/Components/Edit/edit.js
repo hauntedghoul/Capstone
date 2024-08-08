@@ -100,16 +100,16 @@ const Edit = () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) throw new Error('No token found');
-    
+
                 const decodedToken = jwtDecode(token);
                 const username = decodedToken.username; // Assuming username is available in the token
-    
+
                 await axios.delete(`http://localhost:6969/delete/${username}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
-    
+
                 // Clear token and navigate to login
                 localStorage.removeItem('token');
                 navigate('/login');
@@ -125,9 +125,13 @@ const Edit = () => {
                 <img src={previewBannerImage} alt='banner' className='edit-banner' />
                 <img src={previewProfileImage} alt='pfp' className='edit-pfp' />
             </div>
-            <input type="file" onChange={handleProfileImageChange} />
-            <input type="file" onChange={handleBannerImageChange} />
+            <div className='einput'>
+                <label htmlFor="profileImage" className="custom-file-input">Choose Profile Image</label>
+                <input id="profileImage" type="file" className="custom-file-input" onChange={handleProfileImageChange} />
 
+                <label htmlFor="bannerImage" className="custom-file-input-label">Choose Banner Image</label>
+                <input id="bannerImage" type="file" className="custom-file-input" onChange={handleBannerImageChange} />
+            </div>
             <div className='edit-info'>
                 <div>
                     <h3 className='bio'>BIO</h3>

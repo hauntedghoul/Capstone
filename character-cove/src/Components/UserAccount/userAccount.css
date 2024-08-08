@@ -1,0 +1,24 @@
+/* userAccount.css */
+.user-account-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+.profile-header {
+    text-align: center;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.user-info {
+    margin-top: 20px;
+}
+
+.user-posts {
+    margin-top: 20px;
+}

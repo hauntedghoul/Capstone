@@ -245,13 +245,13 @@ const OcPage = () => {
           <div className='images-container'>
             <h3>IMAGES</h3>
             <input type='text' value={newImage} onChange={(e) => setNewImage(e.target.value)} placeholder='Add image URL...' />
-            <button type='button' onClick={handleAddImage}>Add Image</button>
+            <button className='edit-button-bottom' type='button' onClick={handleAddImage}>Add Image</button>
             <div className='image-gallery'>
               {formData.images.length > 0 ? (
                 formData.images.map((image, index) => (
                   <div key={index} className='image-item'>
                     <img className='character-image' src={image.src} alt={`character ${index}`} />
-                    <button className='remove-image' type='button' onClick={() => handleRemoveImage(image)}>Remove</button>
+                    <button className='edit-button-bottom' type='button' onClick={() => handleRemoveImage(image)}>Remove</button>
                   </div>
                 ))
               ) : (
