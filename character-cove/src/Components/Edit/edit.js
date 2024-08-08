@@ -126,7 +126,7 @@ const Edit = () => {
                 <img src={previewProfileImage} alt='pfp' className='edit-pfp' />
             </div>
             <div className='einput'>
-                <label htmlFor="profileImage" className="custom-file-input">Choose Profile Image</label>
+                <label htmlFor="profileImage" className="custom-file-input-label">Choose Profile Image</label>
                 <input id="profileImage" type="file" className="custom-file-input" onChange={handleProfileImageChange} />
 
                 <label htmlFor="bannerImage" className="custom-file-input-label">Choose Banner Image</label>

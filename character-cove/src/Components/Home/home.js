@@ -49,7 +49,7 @@ const Home = () => {
                   src={`http://localhost:6969${profiles[post.user._id].profileImage}`} 
                   className='pfp' 
                   alt='Profile' 
-                  onError={(e) => e.target.src = '/images/unknown.jpg'} // Fallback image
+                  onError={(e) => e.target.src = '/images/unknown.jpg'} 
                 />
               )}
             </Link>
