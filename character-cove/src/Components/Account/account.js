@@ -34,7 +34,7 @@ const Account = () => {
             'Expires': '0'
           }
         });
-    
+
         const profileResponse = await axios.get(`http://localhost:6969/profiles/${userResponse.data._id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -43,7 +43,7 @@ const Account = () => {
             'Expires': '0'
           }
         });
-    
+
 
         setUserData(userResponse.data);
         setUsername(userResponse.data.username);
@@ -60,9 +60,9 @@ const Account = () => {
             'Expires': '0'
           }
         });
-    
+
         setCharacters(charactersResponse.data);
-    
+
         const postsResponse = await axios.get(`http://localhost:6969/posts/user/${userResponse.data._id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -103,6 +103,10 @@ const Account = () => {
       console.error('Error deleting post:', error);
     }
   };
+
+  const handleEditPost = async (postId) => {
+    navigate(`/edit-post/${postId}`);
+  }
 
   if (!userData) {
     return <div>Loading...</div>;
@@ -153,10 +157,11 @@ const Account = () => {
             <h4 className='ptitle'>{post.title}</h4>
             <p className='pbody'>{post.body}</p>
             <div className='imgcont'>
-            {post.images && post.images.map((image, index) => (
+              {post.images && post.images.map((image, index) => (
                 <img key={index} src={image.startsWith('http') ? image : `http://localhost:6969${image}`} alt={`Post image ${index}`} className='pimage' />
               ))}
             </div>
+            <button className='edit-button-bottom' onClick={() => handleEditPost(post._id)}>Edit</button>
             <button className='edit-button-bottom' onClick={() => handleDeletePost(post._id)}>Delete</button>
           </div>
         ))}

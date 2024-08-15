@@ -16,16 +16,19 @@ const Navbar = () => {
                         About</Link></li>
                     <li><Link to="/create">
                         < img src='./images/Create.png' className='navbarimg' alt='create' />
-                        create</Link></li>
+                        Create</Link></li>
                     <li><Link to="/post">
-                        < img src='./images/Post.png' className='navbarimg' alt='search' />
+                        < img src='./images/Post.png' className='navbarimg' alt='post' />
                         Post</Link></li>
                     {/* <li><Link to="/notification">
                         < img src='./images/Notif.png' className='navbarimg' alt='notif' />
                         notification</Link></li> */}
                     <li><Link to="/browse">
                         < img src='./images/Browse.png' className='navbarimg' alt='browse' />
-                        browse</Link></li>
+                        Browse</Link></li>
+                        <li><Link to="/resources">
+                        < img src='./images/Resources.png' className='navbarimg' alt='resources' />
+                        Resources</Link></li>
                     {/* <li><Link to="/settings">
                         < img src='./images/Setting.png' className='navbarimg' alt='setting' />
                         Settings</Link></li> */}

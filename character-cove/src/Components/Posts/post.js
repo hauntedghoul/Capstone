@@ -121,7 +121,7 @@ const Post = () => {
                 {imageLinks.map((link, index) => (
                     <div key={index} className='preview'>
                         <img className='image-preview' src={link} alt={`link-preview-${index}`} />
-                        <button onClick={() => setImageLinks(imageLinks.filter((_, i) => i !== index))}>Remove</button>
+                        <button className='edit-button-bottom' onClick={() => setImageLinks(imageLinks.filter((_, i) => i !== index))}>Remove</button>
                     </div>
                 ))}
             </div>

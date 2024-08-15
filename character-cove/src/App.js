@@ -16,13 +16,15 @@ import OCPage from './Components/OcPage/ocpage';
 import UserAccount from './Components/UserAccount/UserAccount';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './Components/Header/header';
+import EditPost from './Components/EditPost/editpost';
+import Resource from './Components/Resources/resource';
 import PrivateRoute from './Components/PrivateRoute/privateRoute';
 
 function App() {
   return (
     <Router>
       <div>
-        <Header/>
+        <Header />
         <Navbar />
         <div className='main'>
           <Routes>
@@ -30,7 +32,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/about" element={<About />} />
-            <Route path="/createprofile" element={ <Createprofile /> } />
+            <Route path="/resources" element={<Resource />} />
+            <Route path="/createprofile" element={<Createprofile />} />
             <Route path="/account" element={
               <PrivateRoute>
                 <Account />
@@ -39,6 +42,11 @@ function App() {
             <Route path="/edit" element={
               <PrivateRoute>
                 <Edit />
+              </PrivateRoute>
+            } />
+            <Route path="/edit-post/:id" element={
+              <PrivateRoute>
+                <EditPost />
               </PrivateRoute>
             } />
             <Route path="/settings" element={

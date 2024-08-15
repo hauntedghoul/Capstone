@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const { User, Profile, Character, Post } = require('./dal/mongo-dal');
 const authenticateUser = require('./middelware/authenticate');
 
@@ -480,6 +481,54 @@ app.get('/posts/search', async (req, res) => {
     }
 });
 
+//get posts by post id
+app.get('/posts/:postId', async (req, res) => {
+    try {
+        const postId = req.params.postId;
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).send({ message: 'Post not found' });
+        }
+
+        res.status(200).send(post);
+    } catch (error) {
+        console.error('Error fetching post:', error);
+        res.status(500).send({ message: 'Server error' });
+    }
+});
+
+// Update post route
+app.put('/posts/:id', authenticateUser, async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const { title, body, type, images, imagesToRemove = [] } = req.body;
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).send({ message: 'Post not found' });
+        }
+
+        // Remove specified images
+        const updatedImages = post.images.filter(img => !imagesToRemove.includes(img));
+
+        // Add new images, avoiding duplicates
+        const uniqueImages = [...new Set([...updatedImages, ...images])];
+
+        // Update other fields
+        post.title = title;
+        post.body = body;
+        post.type = type;
+        post.images = uniqueImages;
+
+        const updatedPost = await post.save();
+
+        res.status(200).send(updatedPost);
+    } catch (error) {
+        console.error('Error updating post:', error);
+        res.status(400).send(error);
+    }
+});
 
 // Delete a post
 app.delete('/posts/:id', authenticateUser, async (req, res) => {
@@ -552,6 +601,7 @@ app.get('/search', async (req, res) => {
         res.status(500).send({ error: 'Search failed' });
     }
 });
+
 
 app.get('/users/username/:username', async (req, res) => {
     try {
