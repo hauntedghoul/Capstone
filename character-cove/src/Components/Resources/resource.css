@@ -1,0 +1,47 @@
+/* Container for the entire resource list */
+.resource-list-container {
+  border-radius: 25px;
+  padding: 30px;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #21161D;
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.resource-category {
+  margin-bottom: 20px;
+}
+
+.resource-category-title {
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 10px;
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.resource-items {
+  list-style-type: none;
+  padding: 0;
+}
+
+.resource-item {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.resource-icon {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.resource-link {
+  color: #86BBBD;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.resource-link:hover {
+  text-decoration: underline;
+}
