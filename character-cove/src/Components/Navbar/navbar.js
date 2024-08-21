@@ -38,7 +38,7 @@ const Navbar = () => {
                                 <img src='./images/discord.png' className='navbarimg' alt='discord' />
                             </div>
                         </Link>    
-                        Want access to the discord? For the low price of $2.99 a month you can! (I am joking, you don't have to pay, click the discrod logo to join :] )
+                        Want access to the discord? For the low price of $2.99 a month you can! (I am joking, you don't have to pay, click the discord logo to join :] )
                         
                     </div>
 

@@ -190,4 +190,5 @@ body {
 
 .imgcont{
     display: flex;
+    flex-wrap: wrap;
 }

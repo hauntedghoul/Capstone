@@ -46,7 +46,7 @@ const Home = () => {
             <Link to={`/users/${post.user.username}`} className='userpfp'>
               {profiles[post.user._id] && (
                 <img 
-                  src={`http://localhost:6969${profiles[post.user._id].profileImage}`} 
+                  src={`capstone-back-end-two.vercel.app${profiles[post.user._id].profileImage}`} 
                   className='pfp' 
                   alt='Profile' 
                   onError={(e) => e.target.src = '/images/unknown.jpg'} 
@@ -61,7 +61,7 @@ const Home = () => {
           {post.images.length > 0 && (
             <div className='postimage'>
               {post.images.map((image, index) => (
-                <img src={image.startsWith('http') ? image : `http://localhost:6969${image}`} alt={`post-${index}`} key={index} />
+                <img src={image.startsWith('http') ? image : `capstone-back-end-two.vercel.app${image}`} alt={`post-${index}`} key={index} />
               ))}
             </div>
           )}
